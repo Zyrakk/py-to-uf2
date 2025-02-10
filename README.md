@@ -5,6 +5,7 @@ Convierte archivos `.py` a `.uf2` para CircuitPython.
 ---
 
 ## Estructura
+
 ```
 📦 py-to-uf2  
  ┣ 📂 converted_files/        # Carpeta donde se guardarán los archivos .uf2  
@@ -23,3 +24,4 @@ cd py-to-uf2-converter
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
