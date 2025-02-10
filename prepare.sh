@@ -16,4 +16,4 @@ wget -q --show-progress https://raw.githubusercontent.com/microsoft/uf2/master/u
 chmod +x uf2conv.py
 cd ..
 
-echo "✔️ Instalación y configuración completadas. Proyecto listo para usar."
+echo "--- Instalación y configuración completadas. Proyecto listo para usar. ---"
