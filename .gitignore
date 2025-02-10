@@ -1,0 +1,7 @@
+# Ignorar archivos de entorno virtual
+venv/
+__pycache__/
+*.pyc
+
+# Ignorar archivos de salida
+converted_files/

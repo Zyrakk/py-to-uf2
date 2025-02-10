@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+circuitpython-build-tools
+adafruit-circuitpython-uf2
