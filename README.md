@@ -16,8 +16,8 @@ Convierte archivos `.py` a `.uf2` para CircuitPython.
 ## Instalación
 
 ```bash
-git clone https://github.com/tuusuario/py-to-uf2-converter.git
-cd py-to-uf2-converter
+git clone https://github.com/Zyrakk/py-to-uf2
+cd py-to-uf2
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
