@@ -2,8 +2,6 @@
 
 Convierte archivos `.py` a `.uf2` para CircuitPython.
 
----
-
 ## Estructura
 
 ```
@@ -14,7 +12,6 @@ Convierte archivos `.py` a `.uf2` para CircuitPython.
  ┣ 📜 convert.py              # Script de conversión  
  ┣ 📜 main.py                 # Servidor FastAPI  
 ```
----
 
 ## Instalación
 
