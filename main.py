@@ -55,7 +55,7 @@ def verify_token(request: Request, credentials: HTTPAuthorizationCredentials = S
 async def convert_file(
     request: Request,
     file: UploadFile = File(...),
-    credentials: HTTPAuthorizationCredentials = Depends(verify_token)
+    # credentials: HTTPAuthorizationCredentials = Depends(verify_token)
 ):
     try:
         input_filepath = os.path.join(UPLOAD_FOLDER, file.filename)
