@@ -6,12 +6,14 @@ Este proyecto convierte archivos `.py` a `.uf2` para su uso en CircuitPython.
 
 ```
 📦 py-to-uf2
- ┣ 📂 converted_files/         # Carpeta donde se guardarán los archivos .uf2
+ ┣ 📂 converted_files/        # Carpeta donde se guardarán los archivos .uf2
+ ┣ 📂 resources/              # Carpeta de recursos del frontend  
  ┣ 📜 .gitignore              # Ignora archivos innecesarios
  ┣ 📜 requirements.txt        # Dependencias del proyecto
  ┣ 📜 convert.py              # Script de conversión
  ┣ 📜 prepare.sh              # Script de instalacion.
  ┣ 📜 main.py                 # Servidor FastAPI
+ ┣ 📜 index.html              # Frontend para manejar el convertidor
 ```
 
 ## 📥 Instalación y Configuración
