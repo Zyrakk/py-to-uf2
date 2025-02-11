@@ -6,6 +6,7 @@ from ipaddress import ip_address, ip_network
 import os
 import subprocess
 import shutil
+import sys
 
 # Cargar variables del archivo .env
 load_dotenv()
@@ -57,35 +58,69 @@ async def convert_file(
     file: UploadFile = File(...),
     # credentials: HTTPAuthorizationCredentials = Depends(verify_token)
 ):
+    log_file = "/var/www/html/py-to-uf2/convert_debug.log"
+
     try:
+        with open(log_file, "w") as log:
+            log.write("🚀 Iniciando conversión de archivo...\n")
+
         input_filepath = os.path.join(UPLOAD_FOLDER, file.filename)
         output_filepath = os.path.join(UPLOAD_FOLDER, file.filename.replace(".py", ".uf2"))
+
+        with open(log_file, "a") as log:
+            log.write(f"📂 Guardando archivo en: {input_filepath}\n")
 
         with open(input_filepath, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        result = subprocess.run(["python3", "convert.py", input_filepath, output_filepath], capture_output=True, text=True)
+        with open(log_file, "a") as log:
+            log.write(f"✅ Archivo guardado exitosamente.\n")
 
-        error_log = "/var/www/html/py-to-uf2/error.log"
+        # Verificar que el script convert.py está en el directorio correcto
+        script_path = os.path.abspath("convert.py")
 
-        with open(error_log, "w") as log:
-            log.write(f"Salida estándar:\n{result.stdout}\n")
-            log.write(f"Error estándar:\n{result.stderr}\n")
+        with open(log_file, "a") as log:
+            log.write(f"🔍 Verificando existencia de convert.py en: {script_path}\n")
+            log.write(f"📌 Archivos en directorio actual: {os.listdir('.')}\n")
+
+        if not os.path.exists(script_path):
+            with open(log_file, "a") as log:
+                log.write("❌ ERROR: convert.py no encontrado!\n")
+            return JSONResponse(status_code=500, content={"detail": "convert.py no encontrado"})
+
+        # Usar el mismo Python del entorno virtual
+        python_exec = sys.executable
+
+        with open(log_file, "a") as log:
+            log.write(f"🐍 Usando Python en: {python_exec}\n")
+            log.write(f"🚀 Ejecutando comando: {python_exec} {script_path} {input_filepath} {output_filepath}\n")
+
+        result = subprocess.run(
+            [python_exec, script_path, input_filepath, output_filepath],
+            capture_output=True, text=True
+        )
+
+        with open(log_file, "a") as log:
+            log.write(f"🔎 STDOUT:\n{result.stdout}\n")
+            log.write(f"⚠️ STDERR:\n{result.stderr}\n")
+            log.write(f"🔄 Código de salida: {result.returncode}\n")
 
         if result.returncode != 0:
             return JSONResponse(
                 status_code=500,
                 content={
-                    "detail": "Error en la conversión. Revisa error.log",
+                    "detail": "Error en la conversión. Revisa convert_debug.log",
                 }
             )
 
-        if result.returncode != 0:
-            return JSONResponse(status_code=500, content={"detail": f"Error en la conversión: {result.stderr}"})
+        with open(log_file, "a") as log:
+            log.write(f"✅ Conversión completada exitosamente. Archivo generado: {output_filepath}\n")
 
         return JSONResponse(content={"output_file": f"/download/{os.path.basename(output_filepath)}"})
 
     except Exception as e:
+        with open(log_file, "a") as log:
+            log.write(f"❌ ERROR: {str(e)}\n")
         return JSONResponse(status_code=500, content={"detail": str(e)})
 
 # Ruta para descargar el archivo convertido (sin autenticación)
