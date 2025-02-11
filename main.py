@@ -2,6 +2,7 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Security, Depends,
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import FileResponse, JSONResponse
 from dotenv import load_dotenv
+from ipaddress import ip_address, ip_network
 import os
 import subprocess
 import shutil
@@ -28,10 +29,22 @@ security = HTTPBearer()
 def verify_token(request: Request, credentials: HTTPAuthorizationCredentials = Security(security)):
     client_ip = request.client.host  # Obtiene la IP del cliente
 
-    # Permitir acceso sin token si la solicitud viene de localhost
-    if client_ip in ["127.0.0.1", "localhost"]:
+    # Lista de orígenes permitidos (localhost y frontend web)
+    allowed_origins = ["127.0.0.1", "localhost", "stefsec.com"]
+    # Definir el rango de IPs de la red local
+    local_networks = [ip_network("192.168.1.0/24")]
+
+    # Convertir la IP del cliente en formato de red
+    try:
+        client_ip_obj = ip_address(client_ip)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="IP no válida")
+
+    # Permitir acceso sin token si la IP es localhost, de la red local o de mi web
+    if client_ip in allowed_origins or any(client_ip_obj in net for net in local_networks):
         return None
 
+    # Verificación normal del token para accesos externos
     if credentials.credentials != API_TOKEN:
         raise HTTPException(status_code=401, detail="Token inválido")
 
