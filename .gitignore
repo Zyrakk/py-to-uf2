@@ -5,3 +5,6 @@ __pycache__/
 
 # Ignorar archivos de salida
 converted_files/
+
+# Ignorar variables de entorno
+.env

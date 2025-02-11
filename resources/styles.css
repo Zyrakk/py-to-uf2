@@ -1,0 +1,155 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Navbar fija */
+  .navbar {
+    background: rgba(0, 0, 0, 0.85);
+    padding: 15px 30px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    z-index: 100;
+    border-bottom: 1px solid #333;
+  }
+
+  .navbar a {
+    color: #bbb;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+
+  .navbar a:hover {
+    color: #8e44ad;
+  }
+
+  /* Contenido principal centrado */
+  .main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 20px 40px; /* Espacio para la navbar */
+  }
+
+  /* Nuevo container con layout flexible */
+  .container {
+    background: rgba(20, 20, 20, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    max-width: 500px;
+    width: 100%;
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espaciado entre elementos */
+  }
+
+  .container h2 {
+    font-size: 28px;
+    text-align: center;
+  }
+
+  .container p {
+    font-size: 16px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* Sección de carga de archivo */
+  .file-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .upload-area {
+    border: 2px dashed #8e44ad;
+    border-radius: 5px;
+    padding: 25px;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: #8e44ad;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .upload-area:hover {
+    background: rgba(142, 68, 173, 0.1);
+    border-color: #a569bd;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* Sección de botones */
+  .buttons-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  button, a.button {
+    background: #8e44ad;
+    border: none;
+    padding: 15px;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    width: 100%;
+    font-weight: 600;
+  }
+
+  button:hover, a.button:hover {
+    background: #a569bd;
+    transform: translateY(-2px);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+    background: #1c1c1c;
+    border-top: 1px solid #333;
+  }
+
+  /* Responsividad para móviles */
+  @media (max-width: 480px) {
+    .container {
+      padding: 30px 20px;
+      gap: 20px;
+    }
+    .container h2 {
+      font-size: 24px;
+    }
+    .container p {
+      font-size: 14px;
+    }
+    .navbar {
+      gap: 20px;
+      padding: 10px 15px;
+    }
+  }

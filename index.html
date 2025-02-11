@@ -1,157 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Py to UF2 Converter</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #090909, #1a1a2e);
-            color: #fff;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .navbar {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            padding: 15px;
-            background: #111;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-        .navbar a {
-            color: #9a58ff;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .navbar a:hover {
-            color: #c084fc;
-        }
-        .container {
-            width: 85%;
-            max-width: 500px;
-            text-align: center;
-            background: rgba(30, 30, 40, 0.9);
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(15px);
-            margin-top: 120px;
-        }
-        .container h2 {
-            margin-top: 10px;
-        }
-        .upload-area {
-            border: 2px dashed #9a58ff;
-            padding: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 20px 0;
-            border-radius: 12px;
-            font-size: 16px;
-        }
-        .upload-area:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .hidden { display: none; }
-        button, a.button {
-            background: #9a58ff;
-            border: none;
-            padding: 12px 22px;
-            color: white;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-block;
-            margin-top: 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        button:hover, a.button:hover {
-            background: #c084fc;
-        }
-        #download-btn {
-            display: none;
-        }
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 14px;
-            opacity: 0.7;
-        }
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
-                padding: 30px;
-            }
-            .navbar {
-                flex-direction: row;
-                justify-content: center;
-                gap: 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Py to UF2 Converter</title>
+  <!-- Fuente moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="resources/styles.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="#" target="_blank">Mi GitHub</a>
-        <a href="#" target="_blank">Mi Portafolio</a>
-    </div>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="https://github.com/Zyrakk/py-to-uf2" target="_blank">Repository</a>
+    <a href="stefsec.com" target="_blank">My Portfolio</a>
+  </div>
 
+  <!-- Contenido principal -->
+  <div class="main-content">
     <div class="container">
-        <h2>Convierte archivos Python a UF2 para CircuitPython</h2>
-        <p>Sube tu archivo .py y genera su versión UF2 para usar en tu microcontrolador.</p>
-        <label class="upload-area" for="file-input">Haz clic o arrastra un archivo .py aquí</label>
+      <h2>Python to UF2 Converter</h2>
+      <p>Upload your <strong>.py</strong> file and click <strong>Convert</strong></p>
+
+      <!-- Sección de carga de archivo -->
+      <div class="file-upload-section">
+        <label class="upload-area" for="file-input">Click or drag a .py file here</label>
         <input type="file" id="file-input" accept=".py" class="hidden">
-        <button id="convert-btn">Convertir</button>
+      </div>
+
+      <!-- Sección de botones -->
+      <div class="buttons-section">
+        <button id="convert-btn">Convert</button>
         <a id="download-btn" class="hidden button" download>Descargar UF2</a>
+      </div>
     </div>
+  </div>
 
-    <div class="footer">&copy; 2025 - Py to UF2 Converter</div>
+  <!-- Footer -->
+  <div class="footer">&copy; 2025 - Py to UF2 Converter</div>
 
-    <script>
-        document.getElementById("file-input").addEventListener("change", function() {
-            document.querySelector(".upload-area").textContent = this.files[0].name;
+  <script>
+    // Actualiza el texto del área de carga cuando se selecciona un archivo
+    document.getElementById("file-input").addEventListener("change", function() {
+      if (this.files && this.files.length > 0) {
+        document.querySelector(".upload-area").textContent = this.files[0].name;
+      }
+    });
+
+    // Maneja la conversión y muestra el botón de descarga
+    document.getElementById("convert-btn").addEventListener("click", async function() {
+      let fileInput = document.getElementById("file-input").files[0];
+      if (!fileInput) {
+        alert("Select a .py file.");
+        return;
+      }
+      let formData = new FormData();
+      formData.append("file", fileInput);
+
+      try {
+        let response = await fetch("/convert", {
+          method: "POST",
+          body: formData
         });
-
-        document.getElementById("convert-btn").addEventListener("click", async function() {
-            let fileInput = document.getElementById("file-input").files[0];
-            if (!fileInput) {
-                alert("Selecciona un archivo .py primero.");
-                return;
-            }
-            let formData = new FormData();
-            formData.append("file", fileInput);
-
-            let response = await fetch("/convert", {
-                method: "POST",
-                body: formData
-            });
-
-            let data = await response.json();
-            if (response.ok) {
-                let downloadBtn = document.getElementById("download-btn");
-                downloadBtn.href = data.output_file;
-                downloadBtn.textContent = "Descargar UF2";
-                downloadBtn.style.display = "inline-block";
-            } else {
-                alert("Error: " + data.detail);
-            }
-        });
-    </script>
+        let data = await response.json();
+        if (response.ok) {
+          let downloadBtn = document.getElementById("download-btn");
+          downloadBtn.href = data.output_file;
+          downloadBtn.textContent = "Download UF2";
+          downloadBtn.classList.remove("hidden");
+        } else {
+          alert("Error: " + data.detail);
+        }
+      } catch (error) {
+        alert("An error occurred during the conversion.");
+      }
+    });
+  </script>
 </body>
 </html>
