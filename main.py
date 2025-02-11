@@ -66,6 +66,20 @@ async def convert_file(
 
         result = subprocess.run(["python3", "convert.py", input_filepath, output_filepath], capture_output=True, text=True)
 
+        error_log = "/var/www/html/py-to-uf2/error.log"
+
+        with open(error_log, "w") as log:
+            log.write(f"Salida estándar:\n{result.stdout}\n")
+            log.write(f"Error estándar:\n{result.stderr}\n")
+
+        if result.returncode != 0:
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "detail": "Error en la conversión. Revisa error.log",
+                }
+            )
+
         if result.returncode != 0:
             return JSONResponse(status_code=500, content={"detail": f"Error en la conversión: {result.stderr}"})
 
