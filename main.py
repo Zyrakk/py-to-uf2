@@ -55,7 +55,7 @@ def verify_token(request: Request, credentials: HTTPAuthorizationCredentials = S
 async def convert_file(
     request: Request,
     file: UploadFile = File(...),
-    credentials: HTTPAuthorizationCredentials = Depends(verify_token)
+    # credentials: HTTPAuthorizationCredentials = Depends(verify_token)
 ):
     try:
         input_filepath = os.path.join(UPLOAD_FOLDER, file.filename)
@@ -65,11 +65,6 @@ async def convert_file(
             shutil.copyfileobj(file.file, buffer)
 
         result = subprocess.run(["python3", "convert.py", input_filepath, output_filepath], capture_output=True, text=True)
-
-        if result.returncode != 0:
-            # Captura el error completo para análisis
-            error_detail = result.stderr if result.stderr else result.stdout
-            raise HTTPException(status_code=500, detail=f"Error en la conversión: {error_detail}")
 
         if result.returncode != 0:
             return JSONResponse(status_code=500, content={"detail": f"Error en la conversión: {result.stderr}"})
