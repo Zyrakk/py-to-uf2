@@ -3,3 +3,4 @@ uvicorn
 circuitpython-build-tools
 intelhex
 python-dotenv
+python-multipart

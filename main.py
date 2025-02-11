@@ -17,7 +17,7 @@ if not API_TOKEN:
     raise ValueError("Error: API_TOKEN no está definido en el archivo .env")
 
 # Configuración del servidor
-app = FastAPI()
+app = FastAPI(root_path="/api")
 
 # Carpeta de archivos convertidos
 UPLOAD_FOLDER = "converted_files"
