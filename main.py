@@ -67,6 +67,16 @@ async def convert_file(
         result = subprocess.run(["python3", "convert.py", input_filepath, output_filepath], capture_output=True, text=True)
 
         if result.returncode != 0:
+            return JSONResponse(
+            status_code=500,
+            content={
+                "detail": "Error en la conversión",
+                "stderr": result.stderr,
+                "stdout": result.stdout,
+            }
+            )
+
+        if result.returncode != 0:
             return JSONResponse(status_code=500, content={"detail": f"Error en la conversión: {result.stderr}"})
 
         return JSONResponse(content={"output_file": f"/download/{os.path.basename(output_filepath)}"})
