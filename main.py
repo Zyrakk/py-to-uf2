@@ -88,7 +88,7 @@ async def convert_file(
     except Exception as e:
         return JSONResponse(status_code=500, content={"detail": str(e)})
 
-# Ruta para descargar el archivo convertido (sin autenticación)
+# Ruta para descargar el archivo convertido
 @app.get("/download/{filename}")
 async def download_file(filename: str):
     file_path = os.path.join(UPLOAD_FOLDER, filename)
