@@ -21,7 +21,7 @@ if not API_TOKEN:
 app = FastAPI(root_path="/api")
 
 # Carpeta de archivos convertidos
-UPLOAD_FOLDER = "converted_files"
+UPLOAD_FOLDER = os.path.abspath("converted_files")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 security = HTTPBearer()
