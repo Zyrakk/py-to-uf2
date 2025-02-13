@@ -7,7 +7,7 @@ Este proyecto convierte archivos `.py` a `.uf2` para su uso en CircuitPython.
 ```
 📦 py-to-uf2
  ┣ 📂 converted_files/        # Carpeta donde se guardarán los archivos .uf2
- ┣ 📂 resources/              # Carpeta de recursos del frontend  
+ ┣ 📂 resources/              # Carpeta de recursos del frontend
  ┣ 📜 .gitignore              # Ignora archivos innecesarios
  ┣ 📜 requirements.txt        # Dependencias del proyecto
  ┣ 📜 convert.py              # Script de conversión
@@ -24,11 +24,18 @@ git clone https://github.com/Zyrakk/py-to-uf2.git
 cd py-to-uf2
 ```
 
+### Dar permisos
+Añade los siguientes permisos para utilizar los scripts y que la api sea accesible desde una web apache/nginx
+
+```bash
+sudo chown -R www-data:www-data /ruta/py-to-uf2
+sudo chmod +x prepare.sh main.py convert.py
+```
+
 ### 2️⃣ Ejecutar el script de instalación
 Ejecuta el siguiente comando para configurar el entorno:
 
 ```bash
-chmod +x prepare.sh
 ./prepare.sh
 ```
 
