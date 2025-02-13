@@ -1,12 +1,16 @@
 import subprocess
 import os
 import shutil
+import sys
 
-# Definir carpetas
-INPUT_FOLDER = os.path.abspath("input_files")
-OUTPUT_FOLDER = os.path.abspath("converted_files")
-LOG_ERROR = os.path.abspath("error.log")
-LOG_CONVERT = os.path.abspath("convert.log")
+# Definir la carpeta base usando la ubicación real del script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Definir carpetas relativas a BASE_DIR
+INPUT_FOLDER = os.path.join(BASE_DIR, "input_files")
+OUTPUT_FOLDER = os.path.join(BASE_DIR, "converted_files")
+LOG_ERROR = os.path.join(BASE_DIR, "error.log")
+LOG_CONVERT = os.path.join(BASE_DIR, "convert.log")
 
 # Crear carpetas si no existen
 os.makedirs(INPUT_FOLDER, exist_ok=True)
@@ -21,8 +25,8 @@ def convert_py_to_uf2(py_file: str) -> str:
     """
     Convierte un archivo .py a .uf2 utilizando mpy-cross y uf2conv.py.
     """
-    uf2conv_path = os.path.abspath("tools/uf2conv.py")
-    mpy_cross_path = "mpy-cross"  # Asegúrate de que mpy-cross está en el PATH
+    uf2conv_path = os.path.join(BASE_DIR, "tools", "uf2conv.py")
+    mpy_cross_path = "mpy-cross"  # Asegúrate de que mpy-cross esté en el PATH
 
     # Verificar existencia de archivos y herramientas
     if not os.path.exists(py_file):
@@ -71,9 +75,18 @@ def convert_py_to_uf2(py_file: str) -> str:
         log_message(LOG_ERROR, f"❌ ERROR GENERAL: {str(e)}")
         return ""
 
-# Código de prueba desactivado por defecto
-# if __name__ == "__main__":
-#     test_file = os.path.join(INPUT_FOLDER, "test.py")
-#     output = convert_py_to_uf2(test_file)
-#     if output:
-#         log_message(LOG_CONVERT, f"✅ Archivo convertido con éxito: {output}")
+if __name__ == "__main__":
+    # Verificar que se haya pasado el archivo a convertir
+    if len(sys.argv) < 2:
+        print("Usage: python3 convert.py <py_file>")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    output = convert_py_to_uf2(input_file)
+
+    if output:
+        print(f"Conversion exitosa: {output}")
+        sys.exit(0)
+    else:
+        print("Fallo en la conversión.")
+        sys.exit(1)
