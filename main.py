@@ -60,6 +60,8 @@ async def convert_file(file: UploadFile = File(...), credentials: HTTPAuthorizat
             log_message(LOG_ERROR, f"❌ ERROR: No se pudo guardar {input_filepath}")
             return JSONResponse(status_code=500, content={"detail": "Error al guardar el archivo"})
 
+        log_message(LOG_CONVERT, f"✅ Archivo {file.filename} guardado en {input_filepath}")
+
         # Ejecutar convert.py
         result = subprocess.run(["python3", CONVERT_SCRIPT, input_filepath], capture_output=True, text=True)
 
@@ -67,9 +69,6 @@ async def convert_file(file: UploadFile = File(...), credentials: HTTPAuthorizat
         if result.returncode != 0:
             log_message(LOG_ERROR, f"❌ Error en la conversión de {file.filename}:\n{result.stderr}")
             return JSONResponse(status_code=500, content={"detail": "Error en la conversión. Revisa error.log"})
-
-        # Eliminar el archivo .py después de la conversión
-        os.remove(input_filepath)
 
         # Verificar que el archivo .uf2 existe antes de marcar la conversión como exitosa
         if not os.path.exists(output_filepath):
