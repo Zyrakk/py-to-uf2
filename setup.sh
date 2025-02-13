@@ -5,8 +5,6 @@ INPUT_FOLDER="input_files"
 OUTPUT_FOLDER="converted_files"
 TOOLS_FOLDER="tools"
 VENV_FOLDER="venv"
-MPY_CROSS_PATH="/usr/local/bin/mpy-cross"
-MICROPYTHON_REPO="https://github.com/micropython/micropython.git"
 
 # Crear carpetas necesarias
 mkdir -p "$INPUT_FOLDER"
@@ -47,38 +45,5 @@ if [ ! -f "uf2families.json" ]; then
 fi
 
 cd ..
-
-# Instalar y compilar mpy-cross si no está instalado
-if [ ! -f "$MPY_CROSS_PATH" ]; then
-    echo "--- Clonando MicroPython y compilando mpy-cross ---"
-    git clone "$MICROPYTHON_REPO"
-    cd micropython/mpy-cross || exit 1
-
-    echo "--- Limpiando compilación previa ---"
-    make clean
-
-    echo "--- Compilando mpy-cross (esto puede tardar) ---"
-    make -j$(nproc) | pv -lep -s $(nproc) > /dev/null
-
-    sudo mv mpy-cross "$MPY_CROSS_PATH"
-    sudo chmod +x "$MPY_CROSS_PATH"
-    cd ../..
-    rm -rf micropython  # Elimina la carpeta del repositorio para limpiar espacio
-fi
-
-# Verificar y corregir el intérprete de Python en mpy-cross
-MPY_CROSS_INTERPRETER=$(head -n 1 "$MPY_CROSS_PATH")
-if [[ "$MPY_CROSS_INTERPRETER" == "#!/root/mpy-env/bin/python3" ]]; then
-    echo "--- Corrigiendo el intérprete de Python en mpy-cross ---"
-    sudo sed -i '1s|.*|#!/usr/bin/python3|' "$MPY_CROSS_PATH"
-fi
-
-# Verificar que mpy-cross está instalado correctamente
-if mpy-cross --help &>/dev/null; then
-    echo "--- mpy-cross instalado correctamente ---"
-else
-    echo "❌ ERROR: mpy-cross no se instaló correctamente"
-    exit 1
-fi
 
 echo "--- Instalación y configuración completadas. Proyecto listo para usar. ---"
