@@ -24,15 +24,24 @@ def convert_py_to_uf2(py_file: str) -> str:
     uf2conv_path = os.path.abspath("tools/uf2conv.py")
     mpy_cross_path = "mpy-cross"  # Asegúrate de que mpy-cross está en el PATH
 
+    # Verificar existencia de archivos y herramientas
     if not os.path.exists(py_file):
         log_message(LOG_ERROR, f"❌ ERROR: Archivo {py_file} no encontrado.")
+        return ""
+
+    if not shutil.which(mpy_cross_path):
+        log_message(LOG_ERROR, "❌ ERROR: mpy-cross no está instalado o no está en el PATH.")
+        return ""
+
+    if not os.path.exists(uf2conv_path):
+        log_message(LOG_ERROR, f"❌ ERROR: No se encontró {uf2conv_path}.")
         return ""
 
     output_bin = os.path.join(OUTPUT_FOLDER, os.path.splitext(os.path.basename(py_file))[0] + ".bin")
     output_uf2 = os.path.join(OUTPUT_FOLDER, os.path.splitext(os.path.basename(py_file))[0] + ".uf2")
 
     try:
-        # Convertir .py a .bin
+        # Convertir .py a .bin con mpy-cross
         result_bin = subprocess.run(
             [mpy_cross_path, "-o", output_bin, py_file],
             capture_output=True, text=True
@@ -44,7 +53,7 @@ def convert_py_to_uf2(py_file: str) -> str:
 
         log_message(LOG_CONVERT, f"✅ {py_file} convertido a BIN: {output_bin}")
 
-        # Convertir .bin a .uf2
+        # Convertir .bin a .uf2 con uf2conv.py
         result_uf2 = subprocess.run(
             ["python3", uf2conv_path, "--convert", "--output", output_uf2, output_bin],
             capture_output=True, text=True
@@ -62,8 +71,9 @@ def convert_py_to_uf2(py_file: str) -> str:
         log_message(LOG_ERROR, f"❌ ERROR GENERAL: {str(e)}")
         return ""
 
-if __name__ == "__main__":
-    test_file = os.path.join(INPUT_FOLDER, "test.py")
-    output = convert_py_to_uf2(test_file)
-    if output:
-        log_message(LOG_CONVERT, f"✅ Archivo convertido con éxito: {output}")
+# Código de prueba desactivado por defecto
+# if __name__ == "__main__":
+#     test_file = os.path.join(INPUT_FOLDER, "test.py")
+#     output = convert_py_to_uf2(test_file)
+#     if output:
+#         log_message(LOG_CONVERT, f"✅ Archivo convertido con éxito: {output}")
