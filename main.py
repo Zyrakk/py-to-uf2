@@ -68,6 +68,14 @@ async def convert_file(file: UploadFile = File(...), credentials: HTTPAuthorizat
             log_message(LOG_ERROR, f"❌ Error en la conversión de {file.filename}:\n{result.stderr}")
             return JSONResponse(status_code=500, content={"detail": "Error en la conversión. Revisa error.log"})
 
+        # Eliminar el archivo .py después de la conversión
+        os.remove(input_filepath)
+
+        # Verificar que el archivo .uf2 existe antes de marcar la conversión como exitosa
+        if not os.path.exists(output_filepath):
+            log_message(LOG_ERROR, f"❌ ERROR: El archivo convertido {output_filepath} no se generó correctamente.")
+            return JSONResponse(status_code=500, content={"detail": "Error en la conversión. No se generó el archivo UF2."})
+
         log_message(LOG_CONVERT, f"✅ Conversión exitosa de {file.filename} -> {output_filepath}")
 
         return JSONResponse(content={"output_file": f"/download/{os.path.basename(output_filepath)}"})
