@@ -13,7 +13,7 @@ load_dotenv()
 API_TOKEN = os.getenv("API_TOKEN")
 REQUIRE_AUTH = os.getenv("REQUIRE_AUTH", "true").lower() == "true"  # Habilitar o deshabilitar autenticación
 
-# Definir carpetas
+# Definir carpetas (usando la ruta del directorio actual del script)
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 INPUT_FOLDER = os.path.join(BASE_DIR, "input_files")
 OUTPUT_FOLDER = os.path.join(BASE_DIR, "converted_files")
@@ -25,7 +25,7 @@ CONVERT_SCRIPT = os.path.join(BASE_DIR, "convert.py")
 os.makedirs(INPUT_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Inicializar FastAPI
+# Inicializar FastAPI con root_path para estar detrás de un proxy si es necesario
 app = FastAPI(root_path="/api")
 
 # Configuración de autenticación
@@ -55,14 +55,14 @@ async def convert_file(file: UploadFile = File(...), credentials: HTTPAuthorizat
         with open(input_filepath, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # Verificar si el archivo se guardó correctamente
+        # Verificar que el archivo se guardó correctamente
         if not os.path.exists(input_filepath):
             log_message(LOG_ERROR, f"❌ ERROR: No se pudo guardar {input_filepath}")
             return JSONResponse(status_code=500, content={"detail": "Error al guardar el archivo"})
 
         log_message(LOG_CONVERT, f"✅ Archivo {file.filename} guardado en {input_filepath}")
 
-        # Ejecutar convert.py
+        # Ejecutar convert.py (que ahora sí realiza la conversión)
         result = subprocess.run(["python3", CONVERT_SCRIPT, input_filepath], capture_output=True, text=True)
 
         # Manejo de errores de conversión
@@ -77,7 +77,8 @@ async def convert_file(file: UploadFile = File(...), credentials: HTTPAuthorizat
 
         log_message(LOG_CONVERT, f"✅ Conversión exitosa de {file.filename} -> {output_filepath}")
 
-        return JSONResponse(content={"output_file": f"/download/{os.path.basename(output_filepath)}"})
+        # NOTA: Se actualiza la URL de descarga para incluir el prefijo /api/ en concordancia con el root_path
+        return JSONResponse(content={"output_file": f"/api/download/{os.path.basename(output_filepath)}"})
 
     except Exception as e:
         log_message(LOG_ERROR, f"❌ ERROR GENERAL: {str(e)}")
