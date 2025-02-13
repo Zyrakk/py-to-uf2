@@ -64,6 +64,7 @@
         let data = await response.json();
         if (response.ok) {
           let downloadBtn = document.getElementById("download-btn");
+          
           downloadBtn.href = data.output_file;
           downloadBtn.textContent = "Download UF2";
           downloadBtn.classList.remove("hidden");
